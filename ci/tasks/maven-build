@@ -2,6 +2,7 @@
 
 set -xe
 
+apt-get update
 apt-get install default-jdk -y
 apt-get install maven -y
 
