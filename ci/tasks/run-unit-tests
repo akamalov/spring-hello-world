@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -xe
+
+curl http://hellospring-patient-tiger.local.pcfdev.io | grep 'It works' &> /dev/null
+if [ $? == 0 ]; then
+   echo "Test Passed!"
+fi

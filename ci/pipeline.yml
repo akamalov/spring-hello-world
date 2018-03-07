@@ -1,0 +1,85 @@
+groups:
+- name: main
+  jobs:
+  - unit-tests
+  - deploy-release
+  - push-new-version 
+
+resources:
+- name: spring-hello-world
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/mblakeashley/spring-hello-world.git
+- name: PCF
+  type: cf
+  source:
+    api: {{api}}
+    organization: {{organization}}
+    username: {{deploy-username}}
+    password: {{deploy-password}}
+    skip_cert_check: true
+    space: {{space}}
+
+jobs:
+- name: unit-tests
+  serial: true
+  public: true
+  plan:
+  - get: spring-hello-world
+    trigger: true
+  - task: run-unit-tests
+    file: spring-hello-world/ci/tasks/unit-tests.yml
+
+- name: deploy-release
+  serial: true
+  public: true
+  plan:
+  - get: spring-hello-world
+    trigger: true
+    passed:
+      - unit-tests
+  - task: get-current-app-color
+    file: spring-hello-world/ci/tasks/current-app-get-info.yml
+    params:
+      APP_SUFFIX: {{app-suffix}}
+      API: {{api}}
+      ORG: {{organization}}
+      USER: {{deploy-username}}
+      PWD: {{deploy-password}}
+      SPACE: {{space}}
+  - task: prepare-app-manifest
+    file: spring-hello-world/ci/tasks/app-manifest-prep.yml
+    params:
+      APP_SUFFIX: {{app-suffix}}
+  - put: PCF
+    params:
+      manifest: spring-hello-world/manifest.yml
+      path: spring-hello-world/hellospring
+
+- name: push-new-version
+  serial: true
+  public: true
+  plan:
+  - get: spring-hello-world 
+    trigger: true
+    passed:
+  - task: get-current-app-color
+    file: spring-hello-world/ci/tasks/current-app-get-info.yml
+    params:
+      APP_SUFFIX: {{app-suffix}}
+      API: {{api}}
+      ORG: {{organization}}
+      PWS_USER: {{deploy-username}}
+      PWD: {{deploy-password}}
+      SPACE: {{space}}
+  - task: switch-app-routes
+    file: spring-hello-world/ci/tasks/update-routes.yml
+    params:
+      APP_SUFFIX: {{app-suffix}}
+      APP_DOMAIN: {{app-domain}}
+      API: {{api}}
+      ORG: {{organization}}
+      USER: {{deploy-username}}
+      PWD: {{deploy-password}}
+      SPACE: {{space}}

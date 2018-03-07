@@ -1,0 +1,10 @@
+---
+applications:
+
+- name: hellospring
+  memory: 768M
+  path: application/target/hellospring-application.jar
+  buildpack: https://github.com/cloudfoundry/java-buildpack
+  env:
+    TARGET_RUNTIME: main
+    JBP_CONFIG_SAPJVM_MEMORY_SIZES: 'metaspace:96m..'
