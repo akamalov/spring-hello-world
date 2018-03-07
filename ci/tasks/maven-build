@@ -2,8 +2,8 @@
 
 set -xe
 
-apt-get install default-jdk
-apt-get install maven
+apt-get install default-jdk -y
+apt-get install maven -y
 
 cd spring-hello-world/hellospring
 mvn clean package
