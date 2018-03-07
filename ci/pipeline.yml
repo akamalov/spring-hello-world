@@ -45,8 +45,8 @@ jobs:
       APP_SUFFIX: {{app-suffix}}
       API: {{api}}
       ORG: {{organization}}
-      USER: {{deploy-username}}
-      PWD: {{deploy-password}}
+      CF_USER: {{deploy-username}}
+      CF_PWD: {{deploy-password}}
       SPACE: {{space}}
   - task: prepare-app-manifest
     file: spring-hello-world/ci/tasks/app-manifest-prep.yml
@@ -70,8 +70,8 @@ jobs:
       APP_SUFFIX: {{app-suffix}}
       API: {{api}}
       ORG: {{organization}}
-      PWS_USER: {{deploy-username}}
-      PWD: {{deploy-password}}
+      CF_USER: {{deploy-username}}
+      CF_PWD: {{deploy-password}}
       SPACE: {{space}}
   - task: switch-app-routes
     file: spring-hello-world/ci/tasks/update-routes.yml
@@ -80,6 +80,6 @@ jobs:
       APP_DOMAIN: {{app-domain}}
       API: {{api}}
       ORG: {{organization}}
-      USER: {{deploy-username}}
-      PWD: {{deploy-password}}
+      CF_USER: {{deploy-username}}
+      CF_PWD: {{deploy-password}}
       SPACE: {{space}}
