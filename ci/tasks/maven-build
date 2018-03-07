@@ -14,5 +14,4 @@ apt-get install maven -y
 
 cd spring-hello-world/hellospring
 mvn clean package
-cp manifest.yml ../spring-hello-world
 
