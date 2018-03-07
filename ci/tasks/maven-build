@@ -11,7 +11,6 @@ dpkg -i path/to/cf-cli-*.deb && apt-get install -f
 apt-get update
 apt-get install openjdk-8-jdk -y
 apt-get install maven -y
-apt-get install cf-cli -y
 
 cd spring-hello-world/hellospring
 mvn clean package
