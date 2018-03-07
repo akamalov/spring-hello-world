@@ -63,7 +63,8 @@ jobs:
   plan:
   - get: spring-hello-world 
     trigger: true
-    passed:
+    passed: 
+      - deploy-release
   - task: get-current-app-color
     file: spring-hello-world/ci/tasks/current-app-get-info.yml
     params:
