@@ -4,8 +4,9 @@ set -xe
 
 apt-get update
 apt-get install wget -y
-wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key |  apt-key add -
-echo "deb https://packages.cloudfoundry.org/debian stable main" | tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+wget https://cli.run.pivotal.io/stable?release=debian64&source=github
+dpkg -i path/to/cf-cli-*.deb && apt-get install -f
+
 
 apt-get update
 apt-get install openjdk-8-jdk -y
