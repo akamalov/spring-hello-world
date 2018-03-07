@@ -4,8 +4,8 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: library/ubuntu
-    tag: "latest"
+    repository: library/centos
+    tag: "centos7"
 
 inputs:
 - name: spring-hello-world
