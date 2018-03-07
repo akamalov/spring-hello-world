@@ -7,7 +7,7 @@ env
 
 cf api $API --skip-ssl-validation
 
-cf login -u $CF_USER -p $CF_PWD -o "$ORG" -s "$SPACE"
+cf login -u "$CF_USER" -p "$CF_PWD" -o "$ORG" -s "$SPACE"
 
 cf apps
 
