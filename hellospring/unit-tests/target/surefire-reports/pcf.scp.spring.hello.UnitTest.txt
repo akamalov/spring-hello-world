@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: pcf.scp.spring.hello.UnitTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.152 s - in pcf.scp.spring.hello.UnitTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.14 s - in pcf.scp.spring.hello.UnitTest
