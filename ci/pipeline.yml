@@ -1,8 +1,9 @@
 groups:
 - name: main
   jobs:
-  - unit-tests
+  - maven-build
   - deploy-release
+  - unit-tests
   - push-new-version 
 
 resources:
@@ -22,14 +23,14 @@ resources:
     space: {{space}}
 
 jobs:
-- name: unit-tests
+- name: maven-build
   serial: true
   public: true
   plan:
   - get: spring-hello-world
     trigger: true
-  - task: run-unit-tests
-    file: spring-hello-world/ci/tasks/unit-tests.yml
+  - task: maven-build
+    file: spring-hello-world/ci/tasks/maven-build.yml
 
 - name: deploy-release
   serial: true
@@ -38,7 +39,7 @@ jobs:
   - get: spring-hello-world
     trigger: true
     passed:
-      - unit-tests
+      - maven-build
   - task: get-current-app-color
     file: spring-hello-world/ci/tasks/current-app-get-info.yml
     params:
@@ -57,6 +58,17 @@ jobs:
       manifest: spring-hello-world/manifest.yml
       path: spring-hello-world/hellospring
 
+- name: unit-tests
+  serial: true
+  public: true
+  plan:
+  - get: spring-hello-world
+    trigger: true
+    passed:
+      - deploy-release
+  - task: run-unit-tests
+    file: spring-hello-world/ci/tasks/unit-tests.yml
+
 - name: push-new-version
   serial: true
   public: true
@@ -64,7 +76,7 @@ jobs:
   - get: spring-hello-world 
     trigger: true
     passed: 
-      - deploy-release
+      - unit-tests
   - task: get-current-app-color
     file: spring-hello-world/ci/tasks/current-app-get-info.yml
     params:
