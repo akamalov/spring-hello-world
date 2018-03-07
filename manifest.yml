@@ -3,7 +3,7 @@ applications:
 
 - name: hellospring
   memory: 768M
-  path: application/target/hellospring-application.jar
+  path: hellospring/application/target/hellospring-application.jar
   buildpack: https://github.com/cloudfoundry/java-buildpack
   env:
     TARGET_RUNTIME: main
