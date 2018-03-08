@@ -30,6 +30,11 @@ jobs:
   - get: spring-hello-world
     trigger: true
   - task: maven-build
+    config:
+      inputs:
+      - name: spring-hello-world
+      outputs:
+      - name: builds
     file: spring-hello-world/ci/tasks/maven-build.yml
 
 - name: deploy-release

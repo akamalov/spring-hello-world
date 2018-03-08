@@ -15,3 +15,5 @@ apt-get install maven -y
 cd spring-hello-world/hellospring
 mvn clean package
 
+cd ../..
+cp -r spring-hello-world/hellospring/ builds/
