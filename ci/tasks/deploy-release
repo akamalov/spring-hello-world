@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -xe
+
+pwd
+env
+
+cf api $API --skip-ssl-validation
+
+cf login -u "$CF_USER" -p "$CF_PWD" -o "$ORG" -s "$SPACE"
+
+cf apps
+
+cp spring-hello-world/manifest.yml builds/
+cd builds
+
+cf push

@@ -12,15 +12,15 @@ resources:
   source:
     branch: master
     uri: https://github.com/mblakeashley/spring-hello-world.git
-- name: PCF
-  type: cf
-  source:
-    api: {{api}}
-    organization: {{organization}}
-    username: {{deploy-username}}
-    password: {{deploy-password}}
-    skip_cert_check: true
-    space: {{space}}
+#- name: PCF
+#  type: cf
+#  source:
+#    api: {{api}}
+#    organization: {{organization}}
+#    username: {{deploy-username}}
+#    password: {{deploy-password}}
+#    skip_cert_check: true
+#    space: {{space}}
 
 jobs:
 - name: maven-build
@@ -31,11 +31,18 @@ jobs:
     trigger: true
   - task: maven-build
     config:
-      inputs:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: ubuntu
+          tag: "xenial"
+      inputs: 
       - name: spring-hello-world
       outputs:
       - name: builds
-    file: spring-hello-world/ci/tasks/maven-build.yml
+      run:
+        path: spring-hello-world/ci/tasks/maven-build
 
 - name: deploy-release
   serial: true
@@ -45,26 +52,19 @@ jobs:
     trigger: true
     passed:
       - maven-build
-  - task: get-current-app-color
-    file: spring-hello-world/ci/tasks/current-app-get-info.yml
-    params:
-      APP_SUFFIX: {{app-suffix}}
-      API: {{api}}
-      ORG: {{organization}}
-      CF_USER: {{deploy-username}}
-      CF_PWD: {{deploy-password}}
-      SPACE: {{space}}
-  - task: prepare-app-manifest
-    file: spring-hello-world/ci/tasks/app-manifest-prep.yml
-    params:
-      APP_SUFFIX: {{app-suffix}}
-  - put: PCF
-    inputs: 
-    - name: builds
-    params:
-      manifest: spring-hello-world/manifest.yml
-      path: builds
-
+  - task: deploy-maven-build
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: pivotalservices/docker-concourse-cf-tools
+          tag: "latest"
+      inputs:
+      - name: builds
+      run:
+        path: spring-hello-world/ci/tasks/deploy-release
+     
 - name: unit-tests
   serial: true
   public: true
@@ -84,15 +84,6 @@ jobs:
     trigger: true
     passed: 
       - unit-tests
-  - task: get-current-app-color
-    file: spring-hello-world/ci/tasks/current-app-get-info.yml
-    params:
-      APP_SUFFIX: {{app-suffix}}
-      API: {{api}}
-      ORG: {{organization}}
-      CF_USER: {{deploy-username}}
-      CF_PWD: {{deploy-password}}
-      SPACE: {{space}}
   - task: switch-app-routes
     file: spring-hello-world/ci/tasks/update-routes.yml
     params:
