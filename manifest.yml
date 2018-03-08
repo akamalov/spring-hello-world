@@ -1,10 +1,10 @@
 ---
 applications:
 
-- name: hellospring
+- name: hellospring-blue
   memory: 768M
-  routes:
-  - route: hellospring-devtest.local.pcfdev.io
+  host: hellospring-devtest
+  domain: local.pcfdev.io
   path: hellospring/application/target/hellospring-application.jar
   buildpack: https://github.com/cloudfoundry/java-buildpack
   env:
