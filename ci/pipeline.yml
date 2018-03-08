@@ -1,8 +1,7 @@
 groups:
 - name: main
   jobs:
-  - maven-build
-  - deploy-release
+  - maven-build-and-deploy
   - unit-tests
   - push-new-version 
 
@@ -23,7 +22,7 @@ resources:
 #    space: {{space}}
 
 jobs:
-- name: maven-build
+- name: maven-build-and-deploy
   serial: true
   public: true
   plan:
@@ -43,15 +42,6 @@ jobs:
       - name: builds
       run:
         path: spring-hello-world/ci/tasks/maven-build
-
-- name: deploy-release
-  serial: true
-  public: true
-  plan:
-  - get: spring-hello-world
-    trigger: true
-    passed:
-      - maven-build
   - task: deploy-maven-build
     config:
       platform: linux
@@ -61,6 +51,7 @@ jobs:
           repository: pivotalservices/docker-concourse-cf-tools
           tag: "latest"
       inputs:
+      - name: spring-hello-world
       - name: builds
       run:
         path: spring-hello-world/ci/tasks/deploy-release
@@ -72,7 +63,7 @@ jobs:
   - get: spring-hello-world
     trigger: true
     passed:
-      - deploy-release
+      - maven-build-and-deploy
   - task: run-unit-tests
     file: spring-hello-world/ci/tasks/unit-tests.yml
 

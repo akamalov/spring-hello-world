@@ -11,7 +11,7 @@ cf login -u "$CF_USER" -p "$CF_PWD" -o "$ORG" -s "$SPACE"
 
 cf apps
 
-cp spring-hello-world/manifest.yml builds/
-cd builds
+cp -r builds spring-hello-world/ 
+cd spring-hello-world
 
 cf push
