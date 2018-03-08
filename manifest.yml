@@ -5,7 +5,7 @@ applications:
   memory: 768M
   host: hellospring-devtest
   domain: local.pcfdev.io
-  path: hellospring/application/target/hellospring-application.jar
+  path: builds/application/target/hellospring-application.jar
   buildpack: https://github.com/cloudfoundry/java-buildpack
   env:
     TARGET_RUNTIME: main

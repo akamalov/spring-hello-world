@@ -59,9 +59,11 @@ jobs:
     params:
       APP_SUFFIX: {{app-suffix}}
   - put: PCF
+    inputs: 
+    - name: builds
     params:
       manifest: spring-hello-world/manifest.yml
-      path: spring-hello-world/hellospring
+      path: builds
 
 - name: unit-tests
   serial: true

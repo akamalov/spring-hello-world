@@ -16,4 +16,4 @@ cd spring-hello-world/hellospring
 mvn clean package
 
 cd ../..
-cp -r spring-hello-world/hellospring/ builds/
+cp -r spring-hello-world/hellospring/* builds/
