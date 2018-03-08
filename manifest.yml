@@ -1,7 +1,7 @@
 ---
 applications:
 
-- name: hellospring-blue
+- name: hellospring-green
   memory: 768M
   host: hellospring-devtest
   domain: local.pcfdev.io
