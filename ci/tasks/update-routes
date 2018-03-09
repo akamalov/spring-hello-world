@@ -16,7 +16,7 @@ cf routes
 echo "Removing blue route from prod"
 
 set +e
-cf unmap-route hellospring-blue local.pcfdev.io --hostname hellospring-devtest
+cf unmap-route hellospring-blue local.pcfdev.io --hostname hellospring-prod
 set -e
 
 echo "Mapping green to prod route"

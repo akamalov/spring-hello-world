@@ -3,7 +3,7 @@ groups:
   jobs:
   - maven-build-and-deploy
   - unit-tests
-  - push-new-version 
+  - push-release-to-prod
 
 resources:
 - name: spring-hello-world
@@ -11,15 +11,6 @@ resources:
   source:
     branch: master
     uri: https://github.com/mblakeashley/spring-hello-world.git
-#- name: PCF
-#  type: cf
-#  source:
-#    api: {{api}}
-#    organization: {{organization}}
-#    username: {{deploy-username}}
-#    password: {{deploy-password}}
-#    skip_cert_check: true
-#    space: {{space}}
 
 jobs:
 - name: maven-build-and-deploy
@@ -36,12 +27,15 @@ jobs:
         source:
           repository: ubuntu
           tag: "xenial"
+
       inputs: 
       - name: spring-hello-world
       outputs:
       - name: builds
+
       run:
         path: spring-hello-world/ci/tasks/maven-build
+
   - task: deploy-maven-build
     config:
       platform: linux
@@ -50,11 +44,23 @@ jobs:
         source:
           repository: pivotalservices/docker-concourse-cf-tools
           tag: "latest"
+      
+      params:
+        APP_SUFFIX: {{app-suffix}}
+        APP_DOMAIN: {{app-domain}}
+        API: {{api}}
+        ORG: {{organization}}
+        CF_USER: {{deploy-username}}
+        CF_PWD: {{deploy-password}}
+        SPACE: {{space}}
+      
       inputs:
       - name: spring-hello-world
       - name: builds
+      
       run:
         path: spring-hello-world/ci/tasks/deploy-release
+        
      
 - name: unit-tests
   serial: true
@@ -65,9 +71,21 @@ jobs:
     passed:
       - maven-build-and-deploy
   - task: run-unit-tests
-    file: spring-hello-world/ci/tasks/unit-tests.yml
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: centos/python-35-centos7
+          tag: "latest"
 
-- name: push-new-version
+      inputs:
+      - name: spring-hello-world
+
+      run:
+        path: spring-hello-world/ci/tasks/run-unit-tests
+
+- name: push-release-to-prod
   serial: true
   public: true
   plan:
@@ -76,12 +94,25 @@ jobs:
     passed: 
       - unit-tests
   - task: switch-app-routes
-    file: spring-hello-world/ci/tasks/update-routes.yml
-    params:
-      APP_SUFFIX: {{app-suffix}}
-      APP_DOMAIN: {{app-domain}}
-      API: {{api}}
-      ORG: {{organization}}
-      CF_USER: {{deploy-username}}
-      CF_PWD: {{deploy-password}}
-      SPACE: {{space}}
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: pivotalservices/docker-concourse-cf-tools
+          tag: "latest"
+
+      params:
+        APP_SUFFIX: {{app-suffix}}
+        APP_DOMAIN: {{app-domain}}
+        API: {{api}}
+        ORG: {{organization}}
+        CF_USER: {{deploy-username}}
+        CF_PWD: {{deploy-password}}
+        SPACE: {{space}}
+
+      inputs:
+      - name: spring-hello-world
+
+      run:
+        path: spring-hello-world/ci/tasks/update-routes
