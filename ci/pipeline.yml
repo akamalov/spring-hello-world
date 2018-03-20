@@ -9,7 +9,7 @@ resources:
 - name: spring-hello-world
   type: git
   source:
-    branch: master
+    branch: devtest
     uri: https://github.com/mblakeashley/spring-hello-world.git
 
 jobs:
