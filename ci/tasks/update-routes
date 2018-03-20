@@ -13,16 +13,20 @@ cf apps
 
 cf routes
 
-echo "Removing blue route from prod"
 
+echo "Mapping green to prod route"
+set +e
+cf map-route hellospring-green local.pcfdev.io --hostname hellospring-prod
+set -e
+
+echo "Removing blue route from prod"
 set +e
 cf unmap-route hellospring-blue local.pcfdev.io --hostname hellospring-prod
 set -e
 
-echo "Mapping green to prod route"
-
+echo "Removing green route from devtest"
 set +e
-cf map-route hellospring-green local.pcfdev.io --hostname hellospring-prod
+cf unmap-route hellospring-green local.pcfdev.io --hostname hellospring-devtest
 set -e
 
 echo "Routes updated"
